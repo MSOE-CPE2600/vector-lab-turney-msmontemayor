@@ -108,7 +108,6 @@ int four_toks(char* tokens[]){
     return 0;
 }
 
-//TODO:
 int five_toks(char* tokens[]) {
     int index;
     int op = find_operator(tokens, 1); 
@@ -147,7 +146,7 @@ void print_help(void) {
     printf("  A = B + C             Add vectors\n");
     printf("  A = B - C             Subtract vectors\n");
     printf("  A = 2 * B             Scalar multiply\n");
-    printf("  A = B * 2             Scalar multiply (reverse order also valid)\n\n");
+    printf("  A = B * 2             Scalar multiply\n\n");
 
     printf("Other Notes:\n");
     printf("  Up to 10 vectors may be stored.\n");
