@@ -15,5 +15,7 @@ int three_toks(char* tokens[]);
 int four_toks(char* tokens[]);
 int five_toks(char* tokens[]);
 void print_help(void);
+void cleanup(void);
+void handle_sigint(int sig);
 
 #endif

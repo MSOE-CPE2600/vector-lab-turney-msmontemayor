@@ -6,6 +6,8 @@
 */
 
 #include "prompt.h"
+#include <signal.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -20,9 +22,11 @@ int main(int argc, char* argv[]){
             return 1;
         }
     }
+    
+    atexit(cleanup);
+    signal(SIGINT, handle_sigint);
 
     while(1){
-        if(display_prompt()){
-        }
+        display_prompt();
     }
 }

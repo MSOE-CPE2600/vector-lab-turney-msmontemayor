@@ -42,13 +42,27 @@ int math_vec_create(vector vector_mem[], int idx, char* name, double mag1, doubl
 
 int vec_create(vector vector_mem[], char* tokens[], int index){
 
+    if(vector_mem == NULL){
+        vector_mem = malloc(10 * sizeof(vector));
+        if (vector_mem == NULL) {
+            printf("initial malloc failed");
+        }
+    }
+
     if(index == -1){
-        if(num_vec_stored == 9){
-            printf("memory full\n");
-            return 1;
+        if(num_vec_stored == 10){ //10 - initial size
+            num_vec_stored ++;
+
+            vector *tmp = realloc(vector_mem, num_vec_stored * sizeof(vector));
+
+            if (tmp == NULL) {
+                printf("realloc failed");
+                return 1;
+            }
+
+            vector_mem = tmp;
         }
         index = num_vec_stored;
-        num_vec_stored++;
     }
 
     strcpy(vector_mem[index].name, tokens[0]);
@@ -73,8 +87,9 @@ int vec_create(vector vector_mem[], char* tokens[], int index){
     return 0;
 }
 
-void clear_vars(){
+void clear_vars(vector vector_mem[]){
     num_vec_stored = 0;
+    free(vector_mem);
 }
 
 void list_vars(vector vector_mem[]){
@@ -129,3 +144,5 @@ int get_double(const char* str, double* result) {
 
     return 0;
 }
+
+

@@ -17,12 +17,13 @@
 char user_input[INPUT_LEN];
 char* tokens[INPUT_LEN/2];
 
-vector vector_mem[10];
+vector *vector_mem = NULL;
+int num_vec_stored = 0;
 
 int display_prompt(void){
     printf("minimat>");
     fgets(user_input, 80, stdin);
-    
+
     return tokenize_input(user_input);
 }
 
@@ -58,7 +59,7 @@ int single_token(char* token){
     if(strcmp(token, single_cmds[0]) == 0){
         exit(0);
     } else if(strcmp(token, single_cmds[1]) == 0){
-        clear_vars();
+        clear_vars(vector_mem);
     } else if(strcmp(token, single_cmds[2]) == 0){
         list_vars(vector_mem);
     } else if((index = vec_index(tokens[0], vector_mem)) != -1){
@@ -83,7 +84,6 @@ int three_toks(char* tokens[]){
         if(vec_create(vector_mem, tokens, index)){
             return 1;
         }
-        printf("3 tok assign\n");
         return 0;
     } else{
         //check for valid operator and perform 
@@ -127,6 +127,19 @@ int five_toks(char* tokens[]) {
 
     // Has operator: do math operation and assign result
     return do_math(tokens, vector_mem);
+}
+void cleanup(void) {
+    if (vector_mem != NULL) {
+        free(vector_mem);
+        vector_mem = NULL;
+    }
+    num_vec_stored = 0;
+}
+
+void handle_sigint(int sig) {
+    (void)sig;  // unused parameter
+    cleanup();
+    exit(0);
 }
 
 void print_help(void) {
