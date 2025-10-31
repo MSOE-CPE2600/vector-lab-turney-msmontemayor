@@ -8,18 +8,18 @@
 #include "vecmath.h"
 #include "vec_util.h"
 #include <stdio.h>
-int perform_math(char* tokens[], int op, int is_stored, vector vector_mem[]){
+int perform_math(char* tokens[], int op, int is_stored, vector** vector_mem_ptr){
     switch(op){
         case 1:
-        vec_add(tokens, vector_mem, is_stored);
+        vec_add(tokens, vector_mem_ptr, is_stored);
         break;
         
         case 2:
-        vec_sub(tokens, vector_mem, is_stored);
+        vec_sub(tokens, vector_mem_ptr, is_stored);
         break;
 
         case 3:
-        vec_mult(tokens, vector_mem, is_stored);
+        vec_mult(tokens, vector_mem_ptr, is_stored);
         break;
 
         default:
@@ -29,7 +29,8 @@ int perform_math(char* tokens[], int op, int is_stored, vector vector_mem[]){
     return 0;
 }
 
-int vec_add(char* tokens[], vector vector_mem[], int is_stored){
+int vec_add(char* tokens[], vector** vector_mem_ptr, int is_stored){
+    vector* vector_mem = *vector_mem_ptr;
     int idx1;
     int idx2;
     if(is_stored){
@@ -47,7 +48,7 @@ int vec_add(char* tokens[], vector vector_mem[], int is_stored){
         mag2 = vector_mem[idx1].mag2 + vector_mem[idx2].mag2;
         mag3 = vector_mem[idx1].mag3 + vector_mem[idx2].mag3;
         
-        if (math_vec_create(vector_mem, idx_store, tokens[0], mag1, mag2, mag3)){
+        if (math_vec_create(vector_mem_ptr, idx_store, tokens[0], mag1, mag2, mag3)){
             return 2;
         }
     } else{
@@ -57,7 +58,6 @@ int vec_add(char* tokens[], vector vector_mem[], int is_stored){
         if((idx2 = vec_index(tokens[2], vector_mem)) == -1){
             return 1; // vector doesnt exist
         }
-        
         
         double mag1, mag2, mag3;
         mag1 = vector_mem[idx1].mag1 + vector_mem[idx2].mag1;
@@ -69,7 +69,8 @@ int vec_add(char* tokens[], vector vector_mem[], int is_stored){
     return 0;
 }
 
-int vec_sub(char* tokens[], vector vector_mem[], int is_stored) {
+int vec_sub(char* tokens[], vector** vector_mem_ptr, int is_stored) {
+    vector* vector_mem = *vector_mem_ptr;
     int idx1, idx2;
 
     if (is_stored) {
@@ -82,7 +83,7 @@ int vec_sub(char* tokens[], vector vector_mem[], int is_stored) {
         double mag2 = vector_mem[idx1].mag2 - vector_mem[idx2].mag2;
         double mag3 = vector_mem[idx1].mag3 - vector_mem[idx2].mag3;
 
-        if (math_vec_create(vector_mem, idx_store, tokens[0], mag1, mag2, mag3))
+        if (math_vec_create(vector_mem_ptr, idx_store, tokens[0], mag1, mag2, mag3))
             return 2;
     } else {
         idx1 = vec_index(tokens[0], vector_mem);
@@ -98,7 +99,8 @@ int vec_sub(char* tokens[], vector vector_mem[], int is_stored) {
     return 0;
 }
 
-int vec_mult(char* tokens[], vector vector_mem[], int is_stored) {
+int vec_mult(char* tokens[], vector** vector_mem_ptr, int is_stored) {
+    vector* vector_mem = *vector_mem_ptr;
     int idx_vec;
     double scalar;
 
@@ -122,7 +124,7 @@ int vec_mult(char* tokens[], vector vector_mem[], int is_stored) {
         double mag2 = scalar * vector_mem[idx_vec].mag2;
         double mag3 = scalar * vector_mem[idx_vec].mag3;
 
-        if (math_vec_create(vector_mem, idx_store, tokens[0], mag1, mag2, mag3))
+        if (math_vec_create(vector_mem_ptr, idx_store, tokens[0], mag1, mag2, mag3))
             return 2;
 
     } else {

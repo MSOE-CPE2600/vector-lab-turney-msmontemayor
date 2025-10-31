@@ -11,12 +11,14 @@
 #include "vecmath.h"
 
 int vec_index(char* name, vector vector_mem[]);
-int vec_create(vector vector_mem[], char* tokens[], int index);
-int do_math(char* tokens[], vector vector_mem[]);
-void clear_vars(vector vector_mem[]);
+int vec_create(vector **vector_mem, char* tokens[], int index);
+int do_math(char* tokens[], vector **vector_mem);
+void clear_vars(vector **vector_mem);
 void list_vars(vector vector_mem[]);
 int find_operator(char* tokens[], int is_stored);
 int get_double(const char* str, double *result);
-int math_vec_create(vector vector_mem[], int idx, char* name, double mag1, double mag2, double mag3);
+int math_vec_create(vector **vector_mem_ptr, int idx, char* name, double mag1, double mag2, double mag3);
+int vec_save(const char *filename, vector vector_memory[]);
+int vec_load(const char *filename, vector **vector_memory);
 
 #endif

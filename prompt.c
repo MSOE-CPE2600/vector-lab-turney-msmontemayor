@@ -18,7 +18,6 @@ char user_input[INPUT_LEN];
 char* tokens[INPUT_LEN/2];
 
 vector *vector_mem = NULL;
-int num_vec_stored = 0;
 
 int display_prompt(void){
     printf("minimat>");
@@ -39,7 +38,7 @@ int tokenize_input(char* user_input){
             return 1;
         }
     } else if((tokens[2] = strtok(NULL, " ")) == NULL){
-        return 1;
+        two_toks(tokens);
     } else if((tokens[3] = strtok(NULL, " ")) == NULL){ // 3 inputs
         three_toks(tokens);
     } else if((tokens[4] = strtok(NULL, " ")) == NULL){ // 4 inputs
@@ -53,13 +52,13 @@ int tokenize_input(char* user_input){
 }
 
 int single_token(char* token){
-    char* single_cmds[] = {"quit", "clear", "list"};
+    char* single_cmds[] = {"quit", "clear", "list", "load", "save"};
 
     int index;
     if(strcmp(token, single_cmds[0]) == 0){
         exit(0);
     } else if(strcmp(token, single_cmds[1]) == 0){
-        clear_vars(vector_mem);
+        clear_vars(&vector_mem);
     } else if(strcmp(token, single_cmds[2]) == 0){
         list_vars(vector_mem);
     } else if((index = vec_index(tokens[0], vector_mem)) != -1){
@@ -74,6 +73,18 @@ int single_token(char* token){
     return 0;
 }
 
+int two_toks(char* tokens[]){
+    if(strcmp(tokens[0], "load") == 0){
+        vec_load(tokens[1], &vector_mem);
+        return 0;
+    } else if(strcmp(tokens[0], "save") == 0){
+        vec_save(tokens[1], vector_mem);
+        return 0;
+    }
+    printf("invalid input\n");
+    return 1;
+}
+
 int three_toks(char* tokens[]){
     int index;
     if(strcmp(tokens[1], "=") == 0){
@@ -81,13 +92,13 @@ int three_toks(char* tokens[]){
         //assign vector
         tokens[3] = "0.0";
         tokens[4] = "0.0";
-        if(vec_create(vector_mem, tokens, index)){
+        if(vec_create(&vector_mem, tokens, index)){
             return 1;
         }
         return 0;
     } else{
         //check for valid operator and perform 
-        do_math(tokens, vector_mem);
+        do_math(tokens, &vector_mem);
     }
     return 0;
 }
@@ -97,7 +108,7 @@ int four_toks(char* tokens[]){
     if(strcmp(tokens[1], "=") == 0){
         index = vec_index(tokens[0], vector_mem);
         tokens[4] = "0.0";
-        if(vec_create(vector_mem, tokens, index)){
+        if(vec_create(&vector_mem, tokens, index)){
             return 1;
         }
     } else {
@@ -119,21 +130,17 @@ int five_toks(char* tokens[]) {
     index = vec_index(tokens[0], vector_mem);
 
     if (op == -1) {
-        if (vec_create(vector_mem, tokens, index)) {
+        if (vec_create(&vector_mem, tokens, index)) {
             return 1;
         }
         return 0;
     }
 
     // Has operator: do math operation and assign result
-    return do_math(tokens, vector_mem);
+    return do_math(tokens, &vector_mem);
 }
 void cleanup(void) {
-    if (vector_mem != NULL) {
-        free(vector_mem);
-        vector_mem = NULL;
-    }
-    num_vec_stored = 0;
+    clear_vars(&vector_mem);
 }
 
 void handle_sigint(int sig) {

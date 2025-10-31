@@ -11,6 +11,7 @@
 int display_prompt(void);
 int tokenize_input(char* user_input);
 int single_token(char* token);
+int two_toks(char* token[]);
 int three_toks(char* tokens[]);
 int four_toks(char* tokens[]);
 int five_toks(char* tokens[]);
